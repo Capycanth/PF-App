@@ -1,7 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { Category, SubCategory, Transaction } from "../../../srcDB/model/dataModels";
 import { CurrencyPipe, DatePipe, TitleCasePipe, NgClass } from "@angular/common";
-import { Subject } from "rxjs";
+import { startWith, Subject } from "rxjs";
+import { ChangesSubscribe } from "../changes-subscribe.component";
 
 type TransactionWithCategoryNames = Transaction & {
     categoryName?: string;
@@ -15,26 +16,15 @@ type TransactionWithCategoryNames = Transaction & {
     imports: [CurrencyPipe, DatePipe, TitleCasePipe, NgClass],
     standalone: true,
 })
-export class TransactionGridComponent implements OnInit, OnChanges {
+export class TransactionGridComponent extends ChangesSubscribe {
     @Input() transactions: Transaction[] = [];
     @Input() categoryMap: Map<string, Category> = new Map<string, Category>();
     @Input() subCategoryMap: Map<string, SubCategory> = new Map<string, SubCategory>();
 
     protected transactionsWithCategoryNames: TransactionWithCategoryNames[] = [];
 
-    protected onChanges = new Subject<SimpleChanges>();
-
-    ngOnInit(): void {
-        this.onChanges.subscribe(() => {
-            this.updateTransactionsWithCategoryNames();
-        });
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        this.onChanges.next(changes);
-    }
-
-    private updateTransactionsWithCategoryNames(): void {
+    protected override update(): void {
+        console.log("updating transactions");
         this.transactionsWithCategoryNames = this.transactions.map(tx => {
             const category: Category | undefined = this.categoryMap.get(tx.categoryId);
             const subCategory: SubCategory | undefined = this.subCategoryMap.get(tx.subCategoryId || '');

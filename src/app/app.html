@@ -1,12 +1,17 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+@if (initialized) {
 <div class="page-container">
   <div>
     <date-selector (dateSelected)="onDateSelected($event)" />
   </div>
   <div>Top</div>
-  <div>Middle Left</div>
+  <div>
+    <budget-panel />
+  </div>
   <div>Middle Right</div>
   <div>
     <transaction-grid [categoryMap]="categoryMap" [subCategoryMap]="subCategoryMap" [transactions]="transactions" />
   </div>
 </div>
+}

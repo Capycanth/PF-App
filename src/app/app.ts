@@ -2,25 +2,29 @@ import { Component, OnInit, signal } from '@angular/core';
 import { DateSelectEvent, DateSelectorComponent } from '../components/date-selector/date-selector.component';
 import { TransactionGridComponent } from "../components/transaction-grid/transaction-grid.component";
 import { AccountService } from '../services/account.service';
-import { Account, Category, SubCategory, Transaction, User } from '../../srcDB/model/dataModels';
+import { Account, Budget, Category, SubCategory, Transaction, User } from '../../srcDB/model/dataModels';
 import { CategoryService } from '../services/category.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { TestDataUtil } from '../test/testDataUtil';
 import { filter, first } from 'rxjs';
+import { BudgetPanelComponent } from "../components/budget-panel/budget-panel.component";
 
 @Component({
   selector: 'app-root',
-  imports: [DateSelectorComponent, TransactionGridComponent],
+  imports: [BudgetPanelComponent, DateSelectorComponent, TransactionGridComponent,],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App implements OnInit {
-  protected readonly title = signal('PF-App');
-  protected accounts: Account[] = [];
+  protected initialized: boolean = false;
+
   protected selectedUser: User = User.JOINT;
+  protected accounts: Account[] = [];
+  protected transactions: Transaction[] = [];
+  protected budgets: Budget[] = [];
   protected categoryMap: Map<string, Category> = new Map<string, Category>();
   protected subCategoryMap: Map<string, SubCategory> = new Map<string, SubCategory>();
-  protected transactions: Transaction[] = [];
+
 
   private testMode: boolean = false;
 
@@ -30,6 +34,7 @@ export class App implements OnInit {
     private readonly categoryService: CategoryService
   ) { }
   ngOnInit(): void {
+    this.initialized = false;
     this.router.events
       .pipe(
         filter(event => event instanceof NavigationEnd),
@@ -37,8 +42,9 @@ export class App implements OnInit {
       )
       .subscribe(() => {
         const params = this.router.routerState.snapshot.root.queryParams;
-        console.log(params); // should log { testMode: 'true' }
+        console.log(params);
         this.testMode = params['testMode'] === 'true';
+        this.initialized = true;
       });
   }
 

@@ -1,6 +1,6 @@
-import { Component, OnInit, OnChanges, Input, SimpleChanges } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Budget, Category, Transaction } from "../../../srcDB/model/dataModels";
-import { Subject } from "rxjs";
+import { ChangesSubscribe } from "../changes-subscribe.component";
 
 type BudgetCategorySummary = {
     categoryName: string;
@@ -16,7 +16,7 @@ type BudgetCategorySummary = {
     imports: [],
     standalone: true,
 })
-export class BudgetPanelComponent implements OnInit, OnChanges {
+export class BudgetPanelComponent extends ChangesSubscribe {
     @Input() budget!: Budget;
     @Input() transactions: Transaction[] = [];
     @Input() categoryMap: Map<string, Category> = new Map<string, Category>();
@@ -24,30 +24,21 @@ export class BudgetPanelComponent implements OnInit, OnChanges {
     protected expenseCategorySummaries: BudgetCategorySummary[] = [];
     protected incomeCategorySummaries: BudgetCategorySummary[] = [];
 
-    protected onChanges = new Subject<SimpleChanges>();
-
-    ngOnInit(): void {
-        this.onChanges.subscribe(() => {
-            this.updateCategorySummaries();
-        });
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        this.onChanges.next(changes);
-    }
-
-    private updateCategorySummaries(): void {
+    protected override update(): void {
+        console.log("updating budget")
         this.expenseCategorySummaries = [];
         this.incomeCategorySummaries = [];
 
-        for (const [categoryId, limit] of  this.budget.limitsByCategoryId.entries()) {
+        /* TODO: re-implement when we have budget test data
+
+        for (const [categoryId, limit] of this.budget.limitsByCategoryId.entries()) {
             const category: Category | undefined = this.categoryMap.get(categoryId);
             if (!category) {
                 console.error(`Category with ID ${categoryId} not found.`);
                 continue;
-            } 
+            }
 
-            const categoryTransactions: Transaction[] = 
+            const categoryTransactions: Transaction[] =
                 this.transactions.filter(tx => tx.categoryId === categoryId);
 
             const amount: number = categoryTransactions.reduce((sum, tx) => sum + tx.amount, 0);
@@ -64,6 +55,6 @@ export class BudgetPanelComponent implements OnInit, OnChanges {
             } else if (category.type === 'income') {
                 this.incomeCategorySummaries.push(summary);
             }
-        }
+        }*/
     }
 }
