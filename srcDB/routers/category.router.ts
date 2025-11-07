@@ -14,6 +14,6 @@ function parseCategory(data: any): Category {
         id: data.id,
         name: data.name,
         type: data.type,
-        subCategoryIds: JSON.parse(data.subCategoryIds) ?? [],
+        subCategories: JSON.parse(data.subCategories) ?? [],
     };
 }

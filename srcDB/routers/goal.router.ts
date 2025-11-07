@@ -17,6 +17,6 @@ function parseGoal(data: any): Goal {
         total_cost: data.total_cost,
         saved: data.saved,
         categoryId: data.categoryId,
-        subcategoryId: data.subcategoryId,
+        subCategory: data.subCategory,
     };
 }

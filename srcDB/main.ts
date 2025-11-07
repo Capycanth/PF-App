@@ -1,10 +1,9 @@
 import express, { Express } from 'express';
-import { initializeDatabase } from './database';;
-import categoryRouter from './routers/category.router';
-import subcategoryRouter from './routers/subcategory.router';
+import { initializeDatabase } from './database';
 import accountRouter from './routers/account.router';
-import goalRouter from './routers/goal.router';
 import budgetRouter from './routers/budget.router';
+import categoryRouter from './routers/category.router';
+import goalRouter from './routers/goal.router';
 
 const app: Express = express();
 const PORT: number = 3000;
@@ -15,7 +14,6 @@ app.use(express.static('../public'));
 initializeDatabase();
 
 app.use('/api/category', categoryRouter);
-app.use('/api/subcategory', subcategoryRouter);
 app.use('/api/account', accountRouter);
 app.use('/api/goal', goalRouter);
 app.use('/api/budget', budgetRouter);

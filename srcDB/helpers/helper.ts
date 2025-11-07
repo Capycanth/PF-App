@@ -1,4 +1,4 @@
-import { Category, ObjectId, SubCategory } from "../model/dataModels";
+import { Category, ObjectId } from "../model/dataModels";
 
 export function generateObjectId(): ObjectId {
     return `${Date.now()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
@@ -25,15 +25,11 @@ export function initializeDatabaseObjects(): void {
         let category: Category = {
             id: generateObjectId(),
             name: category_name,
-            subCategoryIds: [],
+            subCategories: [],
             type: category_name === 'Income' ? 'income' : 'expense',
         };
         for (const subcategory_name of subcategory_names) {
-            const subCategory: SubCategory = {
-                id: generateObjectId(),
-                name: subcategory_name,
-            };
-            category.subCategoryIds.push(subCategory.id);
+            category.subCategories.push(subcategory_name);
             // TODO: Create sub category in db
         }
         // TODO: create category in db

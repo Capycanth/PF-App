@@ -1,7 +1,7 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
-import { Category, SubCategory, Transaction } from "../../../srcDB/model/dataModels";
-import { CurrencyPipe, DatePipe, TitleCasePipe, NgClass } from "@angular/common";
-import { startWith, Subject } from "rxjs";
+import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from "@angular/common";
+import { Component, Input } from "@angular/core";
+import { Account, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
+import { TestDataUtil } from "../../test/testDataUtil";
 import { ChangesSubscribe } from "../changes-subscribe.component";
 
 type TransactionWithCategoryNames = Transaction & {
@@ -17,26 +17,44 @@ type TransactionWithCategoryNames = Transaction & {
     standalone: true,
 })
 export class TransactionGridComponent extends ChangesSubscribe {
-    @Input() transactions: Transaction[] = [];
-    @Input() categoryMap: Map<string, Category> = new Map<string, Category>();
-    @Input() subCategoryMap: Map<string, SubCategory> = new Map<string, SubCategory>();
+    @Input() account!: Account;
+    @Input() month!: Month;
+    @Input() categoryMap: Map<ObjectId, Category> = new Map();
+    @Input() test: boolean = false;
+
+    constructor() { super(); }
 
     protected transactionsWithCategoryNames: TransactionWithCategoryNames[] = [];
 
     protected override update(): void {
         console.log("updating transactions");
-        this.transactionsWithCategoryNames = this.transactions.map(tx => {
-            const category: Category | undefined = this.categoryMap.get(tx.categoryId);
-            const subCategory: SubCategory | undefined = this.subCategoryMap.get(tx.subCategoryId || '');
 
-            if (!category) console.error(`Category with ID ${tx.categoryId} not found.`);
-            if (tx.subCategoryId && !subCategory) console.error(`Sub-Category with ID ${tx.subCategoryId} not found.`);
+        if (this.test) this.setupTest();
 
+        const transactions: Transaction[] = this.account.transactionsByMonth.get(this.month) ?? [];
+        this.transactionsWithCategoryNames = transactions.map(tx => this.parseTransaction(tx));
+    }
+
+    private setupTest(): void {
+        this.transactionsWithCategoryNames = TestDataUtil.getSampleTransactions().map(tx => this.parseTransaction(tx));
+    }
+
+    private parseTransaction(tx: Transaction): TransactionWithCategoryNames {
+        const category: Category | undefined = this.categoryMap.get(tx.categoryId);
+        if (!category) {
+            console.error(`Category with ID ${tx.categoryId} not found.`);
             return {
                 ...tx,
-                categoryName: category ? category.name : undefined,
-                subCategoryName: subCategory ? subCategory.name : undefined,
-            };
-        });
+                categoryName: "error",
+                subCategoryName: "error"
+            }
+        }
+
+        const subCategory: string | undefined = tx.subCategory;
+        return {
+            ...tx,
+            categoryName: category.name,
+            subCategoryName: subCategory ? category.subCategories.includes(subCategory) ? subCategory : "Error" : undefined,
+        };
     }
 }

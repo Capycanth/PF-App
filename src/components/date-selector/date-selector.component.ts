@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Month } from "../../../srcDB/model/dataModels";
 
@@ -14,29 +14,25 @@ export type DateSelectEvent = {
     imports: [FormsModule],
     standalone: true,
 })
-export class DateSelectorComponent implements OnInit {
+export class DateSelectorComponent {
     @Output() dateSelected = new EventEmitter<DateSelectEvent>();
+    @Input() month!: Month;
+    @Input() year!: number;
 
     protected months: Month[] = Object.values(Month) as Month[];
-    protected selectedMonth: Month = this.months[new Date().getMonth()];
-    protected selectedYear: number = new Date().getFullYear();
 
-    ngOnInit(): void {
-        this.dateSelected.emit({ month: this.selectedMonth, year: this.selectedYear });
-    }
-
-    protected onMonthSelected(month: Month): void {
-        this.selectedMonth = month;
-        this.dateSelected.emit({ month: this.selectedMonth, year: this.selectedYear });
+    protected onMonthSelected(newMonth: Month): void {
+        this.month = newMonth;
+        this.dateSelected.emit({ month: this.month, year: this.year });
     }
 
     protected onNextYear(): void {
-        this.selectedYear++;
-        this.dateSelected.emit({ month: this.selectedMonth, year: this.selectedYear });
+        this.year++;
+        this.dateSelected.emit({ month: this.month, year: this.year });
     }
 
     protected onPreviousYear(): void {
-        this.selectedYear--;
-        this.dateSelected.emit({ month: this.selectedMonth, year: this.selectedYear });
+        this.year--;
+        this.dateSelected.emit({ month: this.month, year: this.year });
     }
 }
