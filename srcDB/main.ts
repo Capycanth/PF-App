@@ -1,0 +1,25 @@
+import express, { Express } from 'express';
+import { initializeDatabase } from './database';;
+import categoryRouter from './routers/category.router';
+import subcategoryRouter from './routers/subcategory.router';
+import accountRouter from './routers/account.router';
+import goalRouter from './routers/goal.router';
+import budgetRouter from './routers/budget.router';
+
+const app: Express = express();
+const PORT: number = 3000;
+
+app.use(express.json());
+app.use(express.static('../public'));
+
+initializeDatabase();
+
+app.use('/api/category', categoryRouter);
+app.use('/api/subcategory', subcategoryRouter);
+app.use('/api/account', accountRouter);
+app.use('/api/goal', goalRouter);
+app.use('/api/budget', budgetRouter);
+
+app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
+});

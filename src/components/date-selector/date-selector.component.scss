@@ -1,0 +1,19 @@
+.month-button {
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem !important;
+}
+.month-button.selected {
+    color: var(--accent-color);
+}
+.date-selector-container {
+    position: relative;             
+    display: flex;
+    flex-direction: column;
+    justify-content: center;        
+    align-items: center; 
+    height: 100%;
+}
+.year-selector {
+    font-size: 1.25rem;
+    border-bottom: 1px solid var(--accent-color);
+}
