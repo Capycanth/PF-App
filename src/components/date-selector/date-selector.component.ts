@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Month } from "../../../srcDB/model/dataModels";
 
@@ -14,14 +14,14 @@ export type DateSelectEvent = {
     imports: [FormsModule],
     standalone: true,
 })
-export class DateSelectorComponent {
+export class DateSelectorComponent implements OnInit {
     @Output() dateSelected = new EventEmitter<DateSelectEvent>();
 
     protected months: Month[] = Object.values(Month) as Month[];
     protected selectedMonth: Month = this.months[new Date().getMonth()];
     protected selectedYear: number = new Date().getFullYear();
 
-    constructor() {
+    ngOnInit(): void {
         this.dateSelected.emit({ month: this.selectedMonth, year: this.selectedYear });
     }
 
