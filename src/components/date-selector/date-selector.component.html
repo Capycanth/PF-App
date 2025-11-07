@@ -1,12 +1,12 @@
 <div class="date-selector-container">
     <div class="year-selector">
         <button (click)="onPreviousYear()"><i class="fa fa-angle-left"></i></button>
-        <span style="padding-left: 0.1rem;padding-right: 0.1rem;">{{ selectedYear }}</span>
+        <span style="padding-left: 0.1rem;padding-right: 0.1rem;">{{ year }}</span>
         <button (click)="onNextYear()"><i class="fa fa-angle-right"></i></button>
     </div>
-    @for (month of months; track month) {
-        <button class="month-button" [class.selected]="month === selectedMonth" (click)="onMonthSelected(month)">
-            {{ month }}
-        </button>
+    @for (monthItem of months; track $index) {
+    <button class="month-button" [class.selected]="monthItem === month" (click)="onMonthSelected(monthItem)">
+        {{ monthItem }}
+    </button>
     }
 </div>

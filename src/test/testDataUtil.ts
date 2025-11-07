@@ -1,10 +1,17 @@
-import { Category, ObjectId, SubCategory, Transaction } from "../../srcDB/model/dataModels";
 import { generateObjectId } from "../../srcDB/helpers/helper";
+import { Account, Budget, Category, Month, ObjectId, Transaction, User } from "../../srcDB/model/dataModels";
 
 export class TestDataUtil {
+    // ObjectIds
     private static readonly incomeCategoryId: ObjectId = generateObjectId();
     private static readonly expenseCategoryId: ObjectId = generateObjectId();
-    private static readonly expenseSubCategoryId: ObjectId = generateObjectId();
+    private static readonly testAccountId1: ObjectId = generateObjectId();
+    private static readonly testAccountId2: ObjectId = generateObjectId();
+    // SubCategory Names
+    private static readonly subCategoryName: string = "Market";
+    // Todays Dates
+    private static readonly todaysMonth: Month = (Object.values(Month) as Month[])[new Date().getMonth()];
+    private static readonly todaysYear: number = new Date().getFullYear();
 
     static getSampleTransactions(): Transaction[] {
         let transactions: Transaction[] = [];
@@ -14,7 +21,7 @@ export class TestDataUtil {
                     date: '2024-06-15',
                     type: 'expense',
                     categoryId: this.expenseCategoryId,
-                    subCategoryId: this.expenseSubCategoryId,
+                    subCategory: this.subCategoryName,
                     amount: 50.75,
                     note: 'Grocery shopping'
                 },
@@ -35,24 +42,37 @@ export class TestDataUtil {
         categoryMap.set(this.incomeCategoryId, {
             id: this.incomeCategoryId,
             name: 'Income',
-            subCategoryIds: [],
+            subCategories: [],
             type: 'income'
         });
         categoryMap.set(this.expenseCategoryId, {
             id: this.expenseCategoryId,
             name: 'Grocery',
-            subCategoryIds: [this.expenseSubCategoryId],
+            subCategories: [this.subCategoryName],
             type: 'expense'
         });
         return categoryMap;
     }
 
-    static getSubCategoryMap(): Map<ObjectId, SubCategory> {
-        const subCategoryMap: Map<ObjectId, SubCategory> = new Map<ObjectId, SubCategory>();
-        subCategoryMap.set(this.expenseSubCategoryId, {
-            id: this.expenseSubCategoryId,
-            name: 'Market'
-        });
-        return subCategoryMap;
+    static getAccounts(): Account[] {
+        return [
+            {
+                id: this.testAccountId1,
+                user: User.JOINT,
+                year: this.todaysYear,
+                transactionsByMonth: new Map<Month, Transaction[]>([
+                    [this.todaysMonth, this.getSampleTransactions()]
+                ]),
+                budgetsByMonth: new Map<Month, Budget>()
+            }, {
+                id: this.testAccountId2,
+                user: User.DILLON,
+                year: this.todaysYear,
+                transactionsByMonth: new Map<Month, Transaction[]>([
+                    [this.todaysMonth, this.getSampleTransactions()]
+                ]),
+                budgetsByMonth: new Map<Month, Budget>()
+            }
+        ];
     }
 }

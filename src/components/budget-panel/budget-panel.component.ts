@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { Budget, Category, Transaction } from "../../../srcDB/model/dataModels";
+import { Account, Category, Month } from "../../../srcDB/model/dataModels";
 import { ChangesSubscribe } from "../changes-subscribe.component";
 
 type BudgetCategorySummary = {
@@ -17,8 +17,8 @@ type BudgetCategorySummary = {
     standalone: true,
 })
 export class BudgetPanelComponent extends ChangesSubscribe {
-    @Input() budget!: Budget;
-    @Input() transactions: Transaction[] = [];
+    @Input() account!: Account;
+    @Input() month!: Month;
     @Input() categoryMap: Map<string, Category> = new Map<string, Category>();
 
     protected expenseCategorySummaries: BudgetCategorySummary[] = [];

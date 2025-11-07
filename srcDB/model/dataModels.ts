@@ -23,7 +23,7 @@ export interface Transaction {
 	date: string;
 	type: 'income' | 'expense';
 	categoryId: ObjectId;
-	subCategoryId?: ObjectId;
+	subCategory?: string;
 	amount: number;
 	note?: string;
 }
@@ -36,12 +36,8 @@ export interface DatabaseObject {
 
 export interface Category extends DatabaseObject {
 	name: string;
-	subCategoryIds: ObjectId[];
+	subCategories: string[];
 	type: 'income' | 'expense';
-}
-
-export interface SubCategory extends DatabaseObject {
-	name: string;
 }
 
 export interface Account extends DatabaseObject {
@@ -62,5 +58,5 @@ export interface Goal extends DatabaseObject {
 	total_cost: number;
 	saved: number;
 	categoryId: ObjectId;
-	subcategoryId: ObjectId;
+	subCategory?: string;
 }

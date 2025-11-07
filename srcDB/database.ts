@@ -6,23 +6,16 @@ export function initializeDatabase() {
     db.prepare(`
         CREATE TABLE IF NOT EXISTS category (
             id VARCHAR(17) PRIMARY KEY,
-            name TEXT,
+            name TEXT UNIQUE,
             type TEXT,
-            subCategoryIds TEXT
-        )
-    `).run();
-
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS subcategory (
-            id VARCHAR(17) PRIMARY KEY,
-            name TEXT
+            subCategories TEXT
         )
     `).run();
 
     db.prepare(`
         CREATE TABLE IF NOT EXISTS account (
             id VARCHAR(17) PRIMARY KEY,
-            user TEXT,
+            user TEXT UNIQUE,
             year INTEGER,
             transactionsByMonth TEXT,
             budgetsByMonth TEXT
@@ -34,7 +27,7 @@ export function initializeDatabase() {
         CREATE TABLE IF NOT EXISTS budget (
             id VARCHAR(17) PRIMARY KEY,
             name TEXT,
-	        limitsByCategoryid TEXT
+	        limitsByCategoryId TEXT
         )
     `).run();
 
@@ -46,7 +39,7 @@ export function initializeDatabase() {
             total_cost REAL,
             saved REAL,
             categoryId VARCHAR(17),
-            subcategoryId VARCHAR(17)
+            subCategory TEXT
         )
     `).run();
 }
