@@ -7,6 +7,7 @@ export class TestDataUtil {
     private static readonly expenseCategoryId: ObjectId = generateObjectId();
     private static readonly testAccountId1: ObjectId = generateObjectId();
     private static readonly testAccountId2: ObjectId = generateObjectId();
+    private static readonly budgetId: ObjectId = generateObjectId();
     // SubCategory Names
     private static readonly subCategoryName: string = "Market";
     // Todays Dates
@@ -41,7 +42,7 @@ export class TestDataUtil {
         const categoryMap: Map<ObjectId, Category> = new Map<ObjectId, Category>();
         categoryMap.set(this.incomeCategoryId, {
             id: this.incomeCategoryId,
-            name: 'Income',
+            name: 'Salary',
             subCategories: [],
             type: 'income'
         });
@@ -63,7 +64,9 @@ export class TestDataUtil {
                 transactionsByMonth: new Map<Month, Transaction[]>([
                     [this.todaysMonth, this.getSampleTransactions()]
                 ]),
-                budgetsByMonth: new Map<Month, Budget>()
+                budgetsByMonth: new Map<Month, Budget>([
+                    [this.todaysMonth, this.getBudget()]
+                ])
             }, {
                 id: this.testAccountId2,
                 user: User.DILLON,
@@ -71,8 +74,21 @@ export class TestDataUtil {
                 transactionsByMonth: new Map<Month, Transaction[]>([
                     [this.todaysMonth, this.getSampleTransactions()]
                 ]),
-                budgetsByMonth: new Map<Month, Budget>()
+                budgetsByMonth: new Map<Month, Budget>([
+                    [this.todaysMonth, this.getBudget()]
+                ])
             }
         ];
+    }
+
+    static getBudget(): Budget {
+        return {
+            id: this.budgetId,
+            name: "Default",
+            limitsByCategoryId: new Map<ObjectId, number>([
+                [this.incomeCategoryId, 4000],
+                [this.expenseCategoryId, 3000]
+            ])
+        };
     }
 }
