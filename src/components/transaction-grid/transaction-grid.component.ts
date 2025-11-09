@@ -1,7 +1,6 @@
 import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { Account, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
-import { TestDataUtil } from "../../test/testDataUtil";
 import { ChangesSubscribe } from "../changes-subscribe.component";
 
 type TransactionWithCategoryNames = Transaction & {
@@ -29,14 +28,9 @@ export class TransactionGridComponent extends ChangesSubscribe {
     protected override update(): void {
         console.log("updating transactions");
 
-        if (this.test) this.setupTest();
-
         const transactions: Transaction[] = this.account.transactionsByMonth.get(this.month) ?? [];
         this.transactionsWithCategoryNames = transactions.map(tx => this.parseTransaction(tx));
-    }
-
-    private setupTest(): void {
-        this.transactionsWithCategoryNames = TestDataUtil.getSampleTransactions().map(tx => this.parseTransaction(tx));
+        this.transactionsWithCategoryNames.sort((a, b) => new Date(b.date.split('/').reverse().join('/')).getTime() - new Date(a.date.split('/').reverse().join('/')).getTime());
     }
 
     private parseTransaction(tx: Transaction): TransactionWithCategoryNames {

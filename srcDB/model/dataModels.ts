@@ -23,7 +23,7 @@ export interface Transaction {
 	date: string;
 	type: 'income' | 'expense';
 	categoryId: ObjectId;
-	subCategory?: string;
+	subCategory: string;
 	amount: number;
 	note?: string;
 }
@@ -44,12 +44,12 @@ export interface Account extends DatabaseObject {
 	user: User;
 	year: number;
 	transactionsByMonth: Map<Month, Transaction[]>;
-	budgetsByMonth: Map<Month, Budget>;
+	budgetIdsByMonth: Map<Month, ObjectId>;
 }
 
 export interface Budget extends DatabaseObject {
 	name: string;
-	limitsByCategoryId: Map<ObjectId, number>;
+	limitsByCategoryId: Map<ObjectId, Map<string, number>>;
 }
 
 export interface Goal extends DatabaseObject {
