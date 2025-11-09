@@ -30,6 +30,7 @@ export class TransactionGridComponent extends ChangesSubscribe {
 
         const transactions: Transaction[] = this.account.transactionsByMonth.get(this.month) ?? [];
         this.transactionsWithCategoryNames = transactions.map(tx => this.parseTransaction(tx));
+        this.transactionsWithCategoryNames.sort((a, b) => new Date(b.date.split('/').reverse().join('/')).getTime() - new Date(a.date.split('/').reverse().join('/')).getTime());
     }
 
     private parseTransaction(tx: Transaction): TransactionWithCategoryNames {

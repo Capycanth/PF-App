@@ -10,10 +10,10 @@ import { BudgetCategorySummary } from "./budget-panel.component";
     <span>{{ type | titlecase }}</span>
     @for (summary of summaries; track summary.category.id) {
         <div class="budget-group-item">
-            <mat-progress-bar class="budget-group-item-progress-bar" [value]="summary.percent_spent" />
+            <mat-progress-bar class="budget-group-item-progress-bar" [value]="summary.percentSpent" />
             <div class="item-container">
                 <span class="left-item">{{ summary.category.name | titlecase }}</span>
-                <span class="right-item">{{ summary.current | currency }} / {{ summary.limit | currency }}</span>
+                <span class="right-item">{{ summary.amount | currency }} / {{ summary.limit | currency }}</span>
             </div>
         </div>
     }
@@ -35,7 +35,7 @@ import { BudgetCategorySummary } from "./budget-panel.component";
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        width: 90%;
+        width: 95%;
         display: flex;
         justify-content: space-between;
     }
@@ -48,6 +48,6 @@ export class BudgetPanelGroupComponent extends ChangesSubscribe {
     @Input() summaries!: BudgetCategorySummary[];
 
     protected override update(): void {
-        this.summaries.sort((a, b) => a.limit - b.limit);
+        this.summaries.sort((a, b) => b.limit - a.limit);
     }
 }
