@@ -20,7 +20,7 @@ export type BudgetCategorySummary = {
         </div>
         <budget-panel-group [summaries]="incomeCategorySummaries" />
     </div>
-    <div style="margin-top: 8px;">
+    <div style="padding-top: 8px;">
         <div class="title-card">
             <span style="padding-left: 8px;color: var(--text-color)">Expenses</span>
         </div>

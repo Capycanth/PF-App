@@ -10,40 +10,34 @@ import { BudgetCategorySummary } from "./budget-panel.component";
     <span>{{ type | titlecase }}</span>
     @for (summary of summaries; track summary.category.id) {
         <div class="budget-group-item">
+            <mat-progress-bar class="budget-group-item-progress-bar" [value]="summary.percent_spent" />
             <div class="item-container">
                 <span class="left-item">{{ summary.category.name | titlecase }}</span>
                 <span class="right-item">{{ summary.current | currency }} / {{ summary.limit | currency }}</span>
             </div>
-            
-            <mat-progress-bar class="budget-group-item-progress-bar" [value]="summary.percent_spent" />
         </div>
     }
     `,
     styles: `
     .budget-group-item {
-        padding-top: 8px;
-        padding-bottom: 8px;
-        margin-top: 4px;
-        margin-bottom: 4px;
-        background-color: var(--highlight-color);
-        border-radius: 8px;
+        position: relative;
+        margin-top: 8px;
+        margin-bottom: 8px;
     }
     .budget-group-item-progress-bar {
-        border-radius: 2.5px;
-        height: 5px;
+        border-radius: 10px;
+        height: 30px;
         width: 98%;
         left: 1%;
     }
     .item-container {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-    .left-item,
-    .right-item {
-        padding-left: 4px;
-        padding-right: 4px;
     }
     `,
     imports: [CurrencyPipe, MatProgressBarModule, TitleCasePipe],
