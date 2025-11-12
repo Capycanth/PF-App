@@ -53,10 +53,10 @@ export interface Budget extends DatabaseObject {
 }
 
 export interface Goal extends DatabaseObject {
+	accountId: ObjectId;
 	name: string;
-	note?: string;
 	total_cost: number;
 	saved: number;
 	categoryId: ObjectId;
-	subCategory?: string;
+	subCategory: string;
 }

@@ -1,7 +1,7 @@
 import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { Account, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
-import { ChangesSubscribe } from "../changes-subscribe.component";
+import { ChangesSubscribe } from "../shared/changes-subscribe.component";
 
 type TransactionWithCategoryNames = Transaction & {
     categoryName?: string;

@@ -2,8 +2,8 @@ import { Component, Input } from "@angular/core";
 import { Account, Budget, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
 import { BudgetService } from "../../services/budget.service";
 import { TestDataUtil } from "../../test/testDataUtil";
-import { ChangesSubscribe } from "../changes-subscribe.component";
-import { BudgetPanelGroupComponent } from "./budget-panel-group.component";
+import { ChangesSubscribe } from "../shared/changes-subscribe.component";
+import { InlineProgressBarComponent } from "../shared/inline-progress-bar.component";
 
 export type BudgetCategorySummary = {
     category: Category;
@@ -29,13 +29,23 @@ export type SubCategorySummary = {
         <div class="title-card">
             <span>Income</span>
         </div>
-        <budget-panel-group [summaries]="incomeCategorySummaries" />
+        @for (summary of incomeCategorySummaries; track summary.category.id) {
+            <inline-progress-bar
+                [name]="summary.category.name"
+                [value]="summary.amount"
+                [max]="summary.limit" />
+        }
     </div>
     <div style="padding-top: 8px;">
         <div class="title-card">
             <span>Expenses</span>
         </div>
-        <budget-panel-group [summaries]="expenseCategorySummaries" />
+        @for (summary of expenseCategorySummaries; track summary.category.id) {
+            <inline-progress-bar
+                [name]="summary.category.name"
+                [value]="summary.amount"
+                [max]="summary.limit" />
+        }
     </div>
     `,
     styles: `
@@ -48,7 +58,7 @@ export type SubCategorySummary = {
         padding-bottom: 4px;
     }
     `,
-    imports: [BudgetPanelGroupComponent],
+    imports: [InlineProgressBarComponent],
     standalone: true,
 })
 export class BudgetPanelComponent extends ChangesSubscribe {
@@ -141,6 +151,9 @@ export class BudgetPanelComponent extends ChangesSubscribe {
                 });
             }
         }
+
+        this.expenseCategorySummaries.sort((a, b) => b.limit - a.limit);
+        this.incomeCategorySummaries.sort((a, b) => b.limit - a.limit);
     }
 
     private getRemaining(type: 'expense' | 'income', limit: number, amount: number): number {
@@ -150,9 +163,11 @@ export class BudgetPanelComponent extends ChangesSubscribe {
             case "income":
                 return amount - limit;
             default:
-                console.error("Unknown transaction type.")
-                const _exaustiveCheck: never = type;
-                return 0;
+                {
+                    console.error("Unknown transaction type.")
+                    const _exaustiveCheck: never = type;
+                    return 0;
+                }
         }
     }
 }
