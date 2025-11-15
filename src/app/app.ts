@@ -4,6 +4,7 @@ import { filter, first } from 'rxjs';
 import { Account, Category, Month, ObjectId, User } from '../../srcDB/model/dataModels';
 import { BudgetPanelComponent } from "../components/budget-panel/budget-panel.component";
 import { DateSelectEvent, DateSelectorComponent } from '../components/date-selector/date-selector.component';
+import { GoalPanelComponent } from '../components/goal-panel/goal-panel.component';
 import { TransactionGridComponent } from "../components/transaction-grid/transaction-grid.component";
 import { AccountService } from '../services/account.service';
 import { CategoryService } from '../services/category.service';
@@ -11,7 +12,7 @@ import { TestDataUtil } from '../test/testDataUtil';
 
 @Component({
   selector: 'app-root',
-  imports: [BudgetPanelComponent, DateSelectorComponent, TransactionGridComponent],
+  imports: [BudgetPanelComponent, DateSelectorComponent, GoalPanelComponent, TransactionGridComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

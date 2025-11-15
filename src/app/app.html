@@ -9,7 +9,9 @@
   <div>
     <budget-panel [account]="selectedAccount" [month]="selectedMonth" [categoryMap]="categoryByIdMap" [test]="test" />
   </div>
-  <div>Middle Right</div>
+  <div>
+    <goal-panel [account]="selectedAccount" [categoryMap]="categoryByIdMap" [test]="test" />
+  </div>
   <div>
     <transaction-grid [account]="selectedAccount" [month]="selectedMonth" [categoryMap]="categoryByIdMap"
       [test]="test" />
