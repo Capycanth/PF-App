@@ -35,8 +35,8 @@ export function initializeDatabase() {
     db.prepare(`
         CREATE TABLE IF NOT EXISTS goal (
             id VARCHAR(17) PRIMARY KEY,
+            accountId VARCHAR(17),
             name TEXT,
-            note TEXT,
             total_cost REAL,
             saved REAL,
             categoryId VARCHAR(17),

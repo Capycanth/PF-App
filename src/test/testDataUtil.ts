@@ -1,5 +1,5 @@
 import { generateObjectId } from "../../srcDB/helpers/helper";
-import { Account, Budget, Category, Month, ObjectId, Transaction, User } from "../../srcDB/model/dataModels";
+import { Account, Budget, Category, Goal, Month, ObjectId, Transaction, User } from "../../srcDB/model/dataModels";
 
 export class TestDataUtil {
     // Categroy Data
@@ -21,6 +21,7 @@ export class TestDataUtil {
     private static readonly testAccountId1: ObjectId = generateObjectId();
     private static readonly testAccountId2: ObjectId = generateObjectId();
     private static readonly budgetId: ObjectId = generateObjectId();
+    private static readonly goalId: ObjectId = generateObjectId();
 
     // Todays Dates
     private static readonly todaysMonth: Month = (Object.values(Month) as Month[])[new Date().getMonth()];
@@ -166,5 +167,18 @@ export class TestDataUtil {
                 [this.homeCategoryId, new Map([[this.mortgageSubCategoryName, 2200]])],
             ])
         };
+    }
+
+    static getGoals(): Goal[] {
+        return [
+            {
+                id: this.goalId,
+                accountId: this.testAccountId1,
+                name: "New Phone",
+                total_cost: 1500,
+                saved: 600,
+                categoryId: this.homeCategoryId,
+                subCategory: this.phoneSubCategoryName
+            }];
     }
 }
