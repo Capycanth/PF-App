@@ -18,7 +18,8 @@ export function initializeDatabase() {
             user TEXT UNIQUE,
             year INTEGER,
             transactionsByMonth TEXT,
-            budgetsByMonth TEXT
+            budgetIdsByMonth TEXT,
+            icon TEXT
 
         )
     `).run();
