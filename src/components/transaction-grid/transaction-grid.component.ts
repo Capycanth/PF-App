@@ -1,5 +1,6 @@
 import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
+import { MatTableModule } from "@angular/material/table";
 import { Account, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
 import { ChangesSubscribe } from "../shared/changes-subscribe.component";
 
@@ -11,8 +12,17 @@ type TransactionWithCategoryNames = Transaction & {
 @Component({
     selector: 'transaction-grid',
     templateUrl: './transaction-grid.component.html',
-    styleUrl: './transaction-grid.component.scss',
-    imports: [CurrencyPipe, DatePipe, TitleCasePipe, NgClass],
+    styles: `
+    .odd-row {
+        background-color: var(--highlight-dark-color) !important;
+    }
+    .even-row {
+        background-color: var(--highlight-color) !important;
+    }
+    .row-shared {
+        height: 2rem;
+    }`,
+    imports: [CurrencyPipe, DatePipe, MatTableModule, TitleCasePipe, NgClass],
     standalone: true,
 })
 export class TransactionGridComponent extends ChangesSubscribe {
@@ -20,6 +30,8 @@ export class TransactionGridComponent extends ChangesSubscribe {
     @Input() month!: Month;
     @Input() categoryMap: Map<ObjectId, Category> = new Map();
     @Input() test: boolean = false;
+
+    protected displayedColumns: string[] = ['Date', 'Type', 'Category', 'Sub-Category', 'Amount', 'Note'];
 
     constructor() { super(); }
 

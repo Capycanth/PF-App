@@ -42,6 +42,10 @@ body {
   background-color: var(--primary-color) !important;
 }
 
+.mat-mdc-header-cell {
+  color: var(--text-color) !important;
+}
+
 // Variables
 :root {
   --primary-color: #2D3250;
@@ -53,6 +57,9 @@ body {
 
   --mat-progress-bar-track-height: 30px;
   --mat-progress-bar-active-indicator-height: 30px;
+  @include mat.table-overrides((background-color: var(--secondary-color),
+      header-headline-color: black,
+    ));
 }
 
 
@@ -104,6 +111,7 @@ body {
     grid-column: 2 / span 2;
     border-radius: 1rem;
     padding: 0;
+    background-color: unset;
   }
 }
 
