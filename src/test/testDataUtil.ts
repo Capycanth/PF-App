@@ -138,7 +138,8 @@ export class TestDataUtil {
                 ]),
                 budgetIdsByMonth: new Map<Month, ObjectId>([
                     [this.todaysMonth, this.budgetId]
-                ])
+                ]),
+                icon: "fa-solid fa-house"
             }, {
                 id: this.testAccountId2,
                 user: User.DILLON,
@@ -148,7 +149,8 @@ export class TestDataUtil {
                 ]),
                 budgetIdsByMonth: new Map<Month, ObjectId>([
                     [this.todaysMonth, this.budgetId]
-                ])
+                ]),
+                icon: "fa-solids fa-ghost"
             }
         ];
     }

@@ -15,6 +15,7 @@ function parseAccount(data: any): Account {
         user: data.user,
         year: data.year,
         transactionsByMonth: JSON.parse(data.transactionsByMonth) ?? {},
-        budgetsByMonth: JSON.parse(data.budgetsByMonth) ?? {},
+        budgetIdsByMonth: JSON.parse(data.budgetsByMonth) ?? {},
+        icon: data.icon,
     };
 }

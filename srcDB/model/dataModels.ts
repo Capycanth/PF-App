@@ -45,6 +45,7 @@ export interface Account extends DatabaseObject {
 	year: number;
 	transactionsByMonth: Map<Month, Transaction[]>;
 	budgetIdsByMonth: Map<Month, ObjectId>;
+	icon: string;
 }
 
 export interface Budget extends DatabaseObject {
