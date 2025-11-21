@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Account } from "../../../srcDB/model/dataModels";
-import { ChangesSubscribe } from "../changes-subscribe.component";
+import { ChangesSubscribe } from "../shared/changes-subscribe.component";
 
 @Component({
     selector: 'toolbar-header',
@@ -23,16 +23,21 @@ import { ChangesSubscribe } from "../changes-subscribe.component";
     .toolbar-wrapper {
         display: flex;
         flex-direction: row;
-        align-items: right;
+        justify-content: flex-end;
     }
     .account-icon {
         width: 32px;
         height: 32px;
         border-radius: 16px;
         margin-right: 8px;
+        background-color: var(--highlight-color);
+        button {
+            width: 100%;
+            height: 100%;
+        }
     }
     .selected-account {
-        border: 2px solid var(--primary-color);
+        border: 1px solid var(--accent-color);
     }
     `,
     imports: [],

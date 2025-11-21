@@ -5,7 +5,10 @@
   <div>
     <date-selector (dateSelected)="onDateSelected($event)" [month]="selectedMonth" [year]="selectedYear" />
   </div>
-  <div>Top</div>
+  <div>
+    <toolbar-header [accounts]="accounts" [selectedAccount]="selectedAccount"
+      (accountSelected)="onAccountSelected($event)" />
+  </div>
   <div>
     <budget-panel [account]="selectedAccount" [month]="selectedMonth" [categoryMap]="categoryByIdMap" [test]="test" />
   </div>

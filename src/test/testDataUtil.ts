@@ -20,6 +20,7 @@ export class TestDataUtil {
     // Object Ids
     private static readonly testAccountId1: ObjectId = generateObjectId();
     private static readonly testAccountId2: ObjectId = generateObjectId();
+    private static readonly testAccountId3: ObjectId = generateObjectId();
     private static readonly budgetId: ObjectId = generateObjectId();
     private static readonly goalId: ObjectId = generateObjectId();
 
@@ -140,7 +141,7 @@ export class TestDataUtil {
                 budgetIdsByMonth: new Map<Month, ObjectId>([
                     [this.todaysMonth, this.budgetId]
                 ]),
-                icon: "fa-solid fa-house"
+                icon: "fa fa-home"
             }, {
                 id: this.testAccountId2,
                 user: User.DILLON,
@@ -151,7 +152,19 @@ export class TestDataUtil {
                 budgetIdsByMonth: new Map<Month, ObjectId>([
                     [this.todaysMonth, this.budgetId]
                 ]),
-                icon: "fa-solids fa-ghost"
+                icon: "fa fa-coffee"
+            },
+            {
+                id: this.testAccountId3,
+                user: User.SOPHIA,
+                year: this.todaysYear,
+                transactionsByMonth: new Map<Month, Transaction[]>([
+                    [this.todaysMonth, this.getSampleTransactions()]
+                ]),
+                budgetIdsByMonth: new Map<Month, ObjectId>([
+                    [this.todaysMonth, this.budgetId]
+                ]),
+                icon: "fa fa-bug"
             }
         ];
     }

@@ -5,6 +5,7 @@ import { Account, Category, Month, ObjectId, User } from '../../srcDB/model/data
 import { BudgetPanelComponent } from "../components/budget-panel/budget-panel.component";
 import { DateSelectEvent, DateSelectorComponent } from '../components/date-selector/date-selector.component';
 import { GoalPanelComponent } from '../components/goal-panel/goal-panel.component';
+import { ToolbarHeaderComponent } from "../components/toolbar-header/toolbar-header.component";
 import { TransactionGridComponent } from "../components/transaction-grid/transaction-grid.component";
 import { AccountService } from '../services/account.service';
 import { CategoryService } from '../services/category.service';
@@ -12,7 +13,7 @@ import { TestDataUtil } from '../test/testDataUtil';
 
 @Component({
   selector: 'app-root',
-  imports: [BudgetPanelComponent, DateSelectorComponent, GoalPanelComponent, TransactionGridComponent],
+  imports: [BudgetPanelComponent, DateSelectorComponent, GoalPanelComponent, TransactionGridComponent, ToolbarHeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
@@ -61,6 +62,13 @@ export class App implements OnInit {
     this.reload();
   }
 
+  protected onAccountSelected(account: Account): void {
+    this.selectedAccount = account;
+    this.selectedUser = account.user;
+
+    this.reload();
+  }
+
   private reload(): Promise<void> {
     if (this.test) {
       return new Promise<void>(resolve => {
@@ -72,6 +80,7 @@ export class App implements OnInit {
           return resolve();
         }
         this.selectedAccount = selAct;
+        this.selectedUser = selAct.user;
 
         this.categoryByIdMap = TestDataUtil.getCategoryMap();
         resolve();
