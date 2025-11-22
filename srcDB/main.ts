@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express, { Express } from 'express';
 import { initializeDatabase } from './database';
 import accountRouter from './routers/account.router';
@@ -7,6 +8,11 @@ import goalRouter from './routers/goal.router';
 
 const app: Express = express();
 const PORT: number = 3000;
+
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 
 app.use(express.json());
 app.use(express.static('../public'));

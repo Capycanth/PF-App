@@ -1,9 +1,9 @@
 // src/routes/baseRouter.ts
+import { RunResult } from 'better-sqlite3';
 import express, { Request, Response } from 'express';
 import { db } from '../database';
 import { generateObjectId } from '../helpers/helper';
 import { DatabaseObject, ObjectId } from '../model/dataModels';
-import { RunResult } from 'better-sqlite3';
 
 export function createBaseRouter<T extends DatabaseObject>(tableName: string, parseData: (data: any | any[]) => T[]): express.Router {
   const router = express.Router();
@@ -21,7 +21,7 @@ export function createBaseRouter<T extends DatabaseObject>(tableName: string, pa
     if (result.changes === 0) {
       return res.status(500).json({ error: 'Failed to create object' });
     } else {
-      res.status(200).json(parseData(data));
+      return res.status(200).json(parseData(data));
     }
   });
 
@@ -34,11 +34,17 @@ export function createBaseRouter<T extends DatabaseObject>(tableName: string, pa
       const sql: string = `SELECT * FROM ${tableName} WHERE id IN (${placeholders})`;
 
       const rows: unknown[] = db.prepare(sql).all(...ids);
-      handleBulkReturn(res, rows, ids.length, parseData);
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'No objects found for the provided IDs' });
+      } else if (rows.length > 0 && rows.length !== ids.length) {
+        return res.status(206).json({ warning: 'Some objects were not found for the provided IDs', data: parseData(rows) });
+      } else {
+        return res.status(200).json(parseData(rows));
+      }
     }
 
     const rows = db.prepare(`SELECT * FROM ${tableName}`).all();
-    handleBulkReturn(res, rows, -1, parseData);
+    return res.status(200).json(parseData(rows));
   });
 
   // READ ONE
@@ -47,7 +53,7 @@ export function createBaseRouter<T extends DatabaseObject>(tableName: string, pa
     if (!data) {
       return res.status(404).json({ error: 'Object not found' });
     }
-    res.status(200).json(data);
+    return res.status(200).json(data);
   });
 
   // UPDATE
@@ -62,7 +68,7 @@ export function createBaseRouter<T extends DatabaseObject>(tableName: string, pa
     if (result.changes === 0) {
       return res.status(404).json({ error: 'Object not found or no changes made' });
     }
-    res.status(200).json({ id: req.params.id, ...data });
+    return res.status(200).json({ id: req.params.id, ...data });
   });
 
   // DELETE
@@ -71,18 +77,8 @@ export function createBaseRouter<T extends DatabaseObject>(tableName: string, pa
     if (result.changes === 0) {
       return res.status(404).json({ error: 'Object not found or could not delete' });
     }
-    res.status(200).json({ id: req.params.id });
+    return res.status(200).json({ id: req.params.id });
   });
 
   return router;
-}
-
-function handleBulkReturn<T>(res: Response, rows: unknown[], count: number, parseData: (data: any | any[]) => T[]): void {
-  if (rows.length === 0) {
-    res.status(404).json({ error: 'No objects found for the provided IDs' });
-  } else if (count >= 0 && rows.length !== count) {
-    res.status(206).json({ warning: 'Some objects were not found for the provided IDs', data: parseData(rows) });
-  } else {
-    res.status(200).json(parseData(rows));
-  }
 }
