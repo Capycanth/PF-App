@@ -70,6 +70,7 @@ export class App implements OnInit {
   }
 
   private reload(): Promise<void> {
+    console.log(`Reloading data for ${this.selectedUser} : ${this.selectedYear} (test=${this.test})`);
     if (this.test) {
       return new Promise<void>(resolve => {
         this.accounts = TestDataUtil.getAccounts();

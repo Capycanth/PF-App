@@ -3,9 +3,9 @@ import { RunResult } from 'better-sqlite3';
 import express, { Request, Response } from 'express';
 import { db } from '../database';
 import { generateObjectId } from '../helpers/helper';
-import { DatabaseObject, ObjectId } from '../model/dataModels';
+import { ObjectId } from '../model/dataModels';
 
-export function createBaseRouter<T extends DatabaseObject>(tableName: string, parseData: (data: any | any[]) => T[]): express.Router {
+export function createBaseRouter(tableName: string): express.Router {
   const router = express.Router();
 
   // CREATE
@@ -21,7 +21,7 @@ export function createBaseRouter<T extends DatabaseObject>(tableName: string, pa
     if (result.changes === 0) {
       return res.status(500).json({ error: 'Failed to create object' });
     } else {
-      return res.status(200).json(parseData(data));
+      return res.status(200).json(data);
     }
   });
 
@@ -37,14 +37,14 @@ export function createBaseRouter<T extends DatabaseObject>(tableName: string, pa
       if (rows.length === 0) {
         return res.status(404).json({ error: 'No objects found for the provided IDs' });
       } else if (rows.length > 0 && rows.length !== ids.length) {
-        return res.status(206).json({ warning: 'Some objects were not found for the provided IDs', data: parseData(rows) });
+        return res.status(206).json({ warning: 'Some objects were not found for the provided IDs', data: rows });
       } else {
-        return res.status(200).json(parseData(rows));
+        return res.status(200).json(rows);
       }
     }
 
     const rows = db.prepare(`SELECT * FROM ${tableName}`).all();
-    return res.status(200).json(parseData(rows));
+    return res.status(200).json(rows);
   });
 
   // READ ONE
