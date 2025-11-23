@@ -66,8 +66,8 @@ body {
 // Page Container Grid Layout
 .page-container {
   display: grid;
-  grid-template-columns: 8vw 1fr 1fr; // left + 2 right columns
-  grid-template-rows: 5vh 1fr 40%; // top fixed + two flexible rows
+  grid-template-columns: 8vw 46vw 46vw; // left + 2 right columns
+  grid-template-rows: 5vh 45vh 50vh; // top fixed + two flexible rows
   height: 100vh;
 
   >div {

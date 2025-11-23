@@ -25,27 +25,29 @@ export type SubCategorySummary = {
 @Component({
     selector: 'budget-panel',
     template: `
-    <div>
-        <div class="title-card">
-            <span>Income</span>
+    <div style="overflow-y: auto; max-height: 40vh;">
+        <div>
+            <div class="title-card">
+                <span>Income</span>
+            </div>
+            @for (summary of incomeCategorySummaries; track summary.category.id) {
+                <inline-progress-bar
+                    [name]="summary.category.name"
+                    [value]="summary.amount"
+                    [max]="summary.limit" />
+            }
         </div>
-        @for (summary of incomeCategorySummaries; track summary.category.id) {
-            <inline-progress-bar
-                [name]="summary.category.name"
-                [value]="summary.amount"
-                [max]="summary.limit" />
-        }
-    </div>
-    <div style="padding-top: 8px;">
-        <div class="title-card">
-            <span>Expenses</span>
+        <div style="padding-top: 8px;">
+            <div class="title-card">
+                <span>Expenses</span>
+            </div>
+            @for (summary of expenseCategorySummaries; track summary.category.id) {
+                <inline-progress-bar
+                    [name]="summary.category.name"
+                    [value]="summary.amount"
+                    [max]="summary.limit" />
+            }
         </div>
-        @for (summary of expenseCategorySummaries; track summary.category.id) {
-            <inline-progress-bar
-                [name]="summary.category.name"
-                [value]="summary.amount"
-                [max]="summary.limit" />
-        }
     </div>
     `,
     styles: `
