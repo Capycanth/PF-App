@@ -1,3 +1,5 @@
+import { PartialRecord } from "../helpers/type-helper";
+
 export enum User {
 	DILLON = 'Dillon',
 	SOPHIA = 'Sophia',
@@ -43,14 +45,14 @@ export interface Category extends DatabaseObject {
 export interface Account extends DatabaseObject {
 	user: User;
 	year: number;
-	transactionsByMonth: Map<Month, Transaction[]>;
-	budgetIdsByMonth: Map<Month, ObjectId>;
+	transactionsByMonth: PartialRecord<Month, Transaction[]>;
+	budgetIdsByMonth: PartialRecord<Month, ObjectId>;
 	icon: string;
 }
 
 export interface Budget extends DatabaseObject {
 	name: string;
-	limitsByCategoryId: Map<ObjectId, Map<string, number>>;
+	limitsByCategoryId: PartialRecord<ObjectId, PartialRecord<string, number>>;
 }
 
 export interface Goal extends DatabaseObject {

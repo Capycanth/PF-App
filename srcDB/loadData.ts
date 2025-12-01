@@ -196,7 +196,7 @@ data.accounts = [
         id: generateObjectId(),
         user: User.JOINT,
         year: 2025,
-        transactionsByMonth: new Map(),
+        transactionsByMonth: {},
         budgetIdsByMonth: new Map([
             [Month.JANUARY, data.budgets![0].id],
             [Month.FEBRUARY, data.budgets![0].id],
@@ -217,7 +217,7 @@ data.accounts = [
         id: generateObjectId(),
         user: User.DILLON,
         year: 2025,
-        transactionsByMonth: new Map(),
+        transactionsByMonth: {},
         budgetIdsByMonth: new Map([
             [Month.JANUARY, data.budgets![1].id],
             [Month.FEBRUARY, data.budgets![1].id],
@@ -238,7 +238,7 @@ data.accounts = [
         id: generateObjectId(),
         user: User.SOPHIA,
         year: 2025,
-        transactionsByMonth: new Map(),
+        transactionsByMonth: {},
         budgetIdsByMonth: new Map([
             [Month.JANUARY, data.budgets![2].id],
             [Month.FEBRUARY, data.budgets![2].id],

@@ -2,6 +2,7 @@ import { Component, Input } from "@angular/core";
 import { Account, Budget, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
 import { BudgetService } from "../../services/budget.service";
 import { TestDataUtil } from "../../test/testDataUtil";
+import { PartialRecordUtil } from "../../utils/partial-record-utils";
 import { ChangesSubscribe } from "../shared/changes-subscribe.component";
 import { InlineProgressBarComponent } from "../shared/inline-progress-bar.component";
 
@@ -82,7 +83,7 @@ export class BudgetPanelComponent extends ChangesSubscribe {
         if (this.test) {
             this.processBudget(TestDataUtil.getBudget());
         } else {
-            const budgetId: ObjectId | undefined = this.account.budgetIdsByMonth.get(this.month);
+            const budgetId: ObjectId | undefined = this.account.budgetIdsByMonth[this.month];
             if (!budgetId) {
                 console.error(`No budget Id for ${this.account.user} for the month of ${this.month}`);
                 return;
@@ -104,7 +105,7 @@ export class BudgetPanelComponent extends ChangesSubscribe {
             return;
         }
 
-        for (const [categoryId, subCategoryToLimit] of budget.limitsByCategoryId.entries()) {
+        for (const [categoryId, subCategoryToLimit] of PartialRecordUtil.entries(budget.limitsByCategoryId)) {
             const category: Category | undefined = this.categoryMap.get(categoryId);
             if (!category) {
                 console.error(`Category with ID ${categoryId} not found.`);
@@ -115,8 +116,8 @@ export class BudgetPanelComponent extends ChangesSubscribe {
             let categoryAmount: number = 0;
             let categoryLimit: number = 0;
 
-            for (const [subCategory, limit] of subCategoryToLimit.entries()) {
-                const transactions: Transaction[] = this.account.transactionsByMonth.get(this.month) ?? [];
+            for (const [subCategory, limit] of PartialRecordUtil.entries(subCategoryToLimit)) {
+                const transactions: Transaction[] = this.account.transactionsByMonth[this.month] ?? [];
                 const subCategoryTransactions: Transaction[] =
                     transactions.filter(tx => tx.categoryId === categoryId && tx.subCategory === subCategory);
 
