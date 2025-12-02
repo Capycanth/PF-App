@@ -1,7 +1,9 @@
 import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
 import { MatTableModule } from "@angular/material/table";
 import { Account, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
+import { TransitionDialogComponent } from "../dialog/transition-dialog.component";
 import { ChangesSubscribe } from "../shared/changes-subscribe.component";
 
 type TransactionWithCategoryNames = Transaction & {
@@ -33,9 +35,29 @@ export class TransactionGridComponent extends ChangesSubscribe {
 
     protected displayedColumns: string[] = ['Date', 'Type', 'Category', 'Sub-Category', 'Amount', 'Note'];
 
-    constructor() { super(); }
+    constructor(private readonly dialog: MatDialog) { super(); }
 
     protected transactionsWithCategoryNames: TransactionWithCategoryNames[] = [];
+
+    public openTransaction() {
+        const data = {
+            account: this.account,
+            categoryByIdMap: this.categoryMap
+        };
+
+        const dialogRef = this.dialog.open(TransitionDialogComponent, {
+            width: '450px',
+            data: data
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                console.log('Transaction confirmed:', result);
+            } else {
+                console.log('Transaction cancelled');
+            }
+        });
+    }
 
     protected override update(): void {
         console.log("updating transactions");
