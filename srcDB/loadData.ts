@@ -1,5 +1,4 @@
 import { db } from './database';
-import * as Helper from './helpers/helper';
 import { generateObjectId } from './helpers/helper';
 import { Account, Budget, Category, Goal, Month, User } from './model/dataModels';
 
@@ -11,11 +10,14 @@ function loadCategories(categories: Category[]) {
     `);
 
     const insertMany = db.transaction((rows: Category[]) => {
-        for (const row of rows)
+        for (const row of rows) {
             stmt.run({
-                ...row,
-                subCategories: Helper.safeSerializeArray(row.subCategories),
+                id: row.id,
+                name: row.name,
+                type: row.type,
+                subCategories: JSON.stringify(row.subCategories)
             });
+        }
     });
 
     insertMany(categories);
@@ -29,13 +31,16 @@ function loadAccounts(accounts: Account[]) {
     `);
 
     const insertMany = db.transaction((rows: Account[]) => {
-        for (const row of rows)
+        for (const row of rows) {
             stmt.run({
-                ...row,
-                transactionsByMonth: Helper.safeSerializeMap(row.transactionsByMonth),
-                budgetIdsByMonth: Helper.safeSerializeMap(row.budgetIdsByMonth),
+                id: row.id,
+                user: row.user,
+                year: row.year,
+                transactionsByMonth: JSON.stringify(row.transactionsByMonth),
+                budgetIdsByMonth: JSON.stringify(row.budgetIdsByMonth),
+                icon: row.icon
             });
-
+        }
     });
 
     insertMany(accounts);
@@ -49,10 +54,13 @@ function loadBudgets(budgets: Budget[]) {
     `);
 
     const insertMany = db.transaction((rows: Budget[]) => {
-        for (const row of rows) stmt.run({
-            ...row,
-            limitsByCategoryId: Helper.safeSerializeNestedMap(row.limitsByCategoryId),
-        });
+        for (const row of rows) {
+            stmt.run({
+                id: row.id,
+                name: row.name,
+                limitsByCategoryId: JSON.stringify(row.limitsByCategoryId)
+            });
+        }
     });
 
     insertMany(budgets);
@@ -66,7 +74,17 @@ function loadGoals(goals: Goal[]) {
     `);
 
     const insertMany = db.transaction((rows: Goal[]) => {
-        for (const row of rows) stmt.run(row);
+        for (const row of rows) {
+            stmt.run({
+                id: row.id,
+                accountId: row.accountId,
+                name: row.name,
+                total_cost: row.total_cost,
+                saved: row.saved,
+                categoryId: row.categoryId,
+                subCategory: row.subCategory
+            });
+        }
     });
 
     insertMany(goals);
@@ -158,36 +176,83 @@ data.budgets = [
     {
         id: generateObjectId(),
         name: 'Joint Budget',
-        limitsByCategoryId: new Map([
-            [data.categories[0].id, new Map([['Mortgage', 2843.52], ['Insurance', 200], ['Improvement', 200], ['Goods', 0]])],
-            [data.categories[1].id, new Map([['Electric', 250], ['Gas', 100], ['Water', 50], ['Internet', 60], ['Phone', 230], ['Trash', 45.83]])],
-            [data.categories[2].id, new Map([['Fuel', 120], ['Insurance', 181.33], ['Repair', 0]])],
-            [data.categories[3].id, new Map([['Car', 387.33], ['Student', 200]])],
-            [data.categories[4].id, new Map([['Market', 700], ['Cafe', 100], ['Dining', 150]])],
-            [data.categories[5].id, new Map([['General', 150]])],
-            //[data.categories[6].id, new Map([['General', 100], ['Pharmacy', 50], ['Emergency', 0]])],
-            [data.categories[7].id, new Map([['Salary', 6940.34]])],
-            [data.categories[8].id, new Map([['Events', 50]])],
-        ]),
+        limitsByCategoryId: {
+            [data.categories[0].id]: {
+                Mortgage: 2843.52,
+                Insurance: 200,
+                Improvement: 200,
+                Goods: 0,
+            },
+            [data.categories[1].id]: {
+                Electric: 250,
+                Gas: 100,
+                Water: 50,
+                Internet: 60,
+                Phone: 230,
+                Trash: 45.83,
+            },
+            [data.categories[2].id]: {
+                Fuel: 120,
+                Insurance: 181.33,
+                Repair: 0,
+            },
+            [data.categories[3].id]: {
+                Car: 387.33,
+                Student: 200,
+            },
+            [data.categories[4].id]: {
+                Market: 700,
+                Cafe: 100,
+                Dining: 150,
+            },
+            [data.categories[5].id]: {
+                General: 150,
+            },
+            // [data.categories[6].id]: {
+            //     General: 100,
+            //     Pharmacy: 50,
+            //     Emergency: 0,
+            // },
+            [data.categories[7].id]: {
+                Salary: 6940.34,
+            },
+            [data.categories[8].id]: {
+                Events: 50,
+            },
+        },
     },
     {
         id: generateObjectId(),
         name: 'Dillon Budget',
-        limitsByCategoryId: new Map([
-            [data.categories[7].id, new Map([['Salary', 1269.89]])],
-            [data.categories[3].id, new Map([['Student', 450]])],
-            [data.categories[8].id, new Map([['Hobby', 50]])],
-            [data.categories[4].id, new Map([['Cafe', 50]])]
-        ]),
+        limitsByCategoryId: {
+            [data.categories[7].id]: {
+                Salary: 1269.89,
+            },
+            [data.categories[3].id]: {
+                Student: 450,
+            },
+            [data.categories[8].id]: {
+                Hobby: 50,
+            },
+            [data.categories[4].id]: {
+                Cafe: 50,
+            },
+        }
     },
     {
         id: generateObjectId(),
         name: 'Sophia Budget',
-        limitsByCategoryId: new Map([
-            [data.categories[7].id, new Map([['Salary', 1332.73]])],
-            [data.categories[8].id, new Map([['Hobby', 50]])],
-            [data.categories[4].id, new Map([['Cafe', 50]])]
-        ]),
+        limitsByCategoryId: {
+            [data.categories[7].id]: {
+                Salary: 1332.73,
+            },
+            [data.categories[8].id]: {
+                Hobby: 50,
+            },
+            [data.categories[4].id]: {
+                Cafe: 50,
+            },
+        }
     }
 ];
 
@@ -196,63 +261,63 @@ data.accounts = [
         id: generateObjectId(),
         user: User.JOINT,
         year: 2025,
-        transactionsByMonth: new Map(),
-        budgetIdsByMonth: new Map([
-            [Month.JANUARY, data.budgets![0].id],
-            [Month.FEBRUARY, data.budgets![0].id],
-            [Month.MARCH, data.budgets![0].id],
-            [Month.APRIL, data.budgets![0].id],
-            [Month.MAY, data.budgets![0].id],
-            [Month.JUNE, data.budgets![0].id],
-            [Month.JULY, data.budgets![0].id],
-            [Month.AUGUST, data.budgets![0].id],
-            [Month.SEPTEMBER, data.budgets![0].id],
-            [Month.OCTOBER, data.budgets![0].id],
-            [Month.NOVEMBER, data.budgets![0].id],
-            [Month.DECEMBER, data.budgets![0].id],
-        ]),
+        transactionsByMonth: {},
+        budgetIdsByMonth: {
+            [Month.JANUARY]: data.budgets![0].id,
+            [Month.FEBRUARY]: data.budgets![0].id,
+            [Month.MARCH]: data.budgets![0].id,
+            [Month.APRIL]: data.budgets![0].id,
+            [Month.MAY]: data.budgets![0].id,
+            [Month.JUNE]: data.budgets![0].id,
+            [Month.JULY]: data.budgets![0].id,
+            [Month.AUGUST]: data.budgets![0].id,
+            [Month.SEPTEMBER]: data.budgets![0].id,
+            [Month.OCTOBER]: data.budgets![0].id,
+            [Month.NOVEMBER]: data.budgets![0].id,
+            [Month.DECEMBER]: data.budgets![0].id,
+        },
         icon: 'fa fa-home'
     },
     {
         id: generateObjectId(),
         user: User.DILLON,
         year: 2025,
-        transactionsByMonth: new Map(),
-        budgetIdsByMonth: new Map([
-            [Month.JANUARY, data.budgets![1].id],
-            [Month.FEBRUARY, data.budgets![1].id],
-            [Month.MARCH, data.budgets![1].id],
-            [Month.APRIL, data.budgets![1].id],
-            [Month.MAY, data.budgets![1].id],
-            [Month.JUNE, data.budgets![1].id],
-            [Month.JULY, data.budgets![1].id],
-            [Month.AUGUST, data.budgets![1].id],
-            [Month.SEPTEMBER, data.budgets![1].id],
-            [Month.OCTOBER, data.budgets![1].id],
-            [Month.NOVEMBER, data.budgets![1].id],
-            [Month.DECEMBER, data.budgets![1].id],
-        ]),
+        transactionsByMonth: {},
+        budgetIdsByMonth: {
+            [Month.JANUARY]: data.budgets![1].id,
+            [Month.FEBRUARY]: data.budgets![1].id,
+            [Month.MARCH]: data.budgets![1].id,
+            [Month.APRIL]: data.budgets![1].id,
+            [Month.MAY]: data.budgets![1].id,
+            [Month.JUNE]: data.budgets![1].id,
+            [Month.JULY]: data.budgets![1].id,
+            [Month.AUGUST]: data.budgets![1].id,
+            [Month.SEPTEMBER]: data.budgets![1].id,
+            [Month.OCTOBER]: data.budgets![1].id,
+            [Month.NOVEMBER]: data.budgets![1].id,
+            [Month.DECEMBER]: data.budgets![1].id,
+        },
         icon: 'fa fa-coffee'
     },
     {
         id: generateObjectId(),
         user: User.SOPHIA,
         year: 2025,
-        transactionsByMonth: new Map(),
-        budgetIdsByMonth: new Map([
-            [Month.JANUARY, data.budgets![2].id],
-            [Month.FEBRUARY, data.budgets![2].id],
-            [Month.MARCH, data.budgets![2].id],
-            [Month.APRIL, data.budgets![2].id],
-            [Month.MAY, data.budgets![2].id],
-            [Month.JUNE, data.budgets![2].id],
-            [Month.JULY, data.budgets![2].id],
-            [Month.AUGUST, data.budgets![2].id],
-            [Month.SEPTEMBER, data.budgets![2].id],
-            [Month.OCTOBER, data.budgets![2].id],
-            [Month.NOVEMBER, data.budgets![2].id],
-            [Month.DECEMBER, data.budgets![2].id],
-        ]),
+        transactionsByMonth: {},
+        budgetIdsByMonth: {
+            [Month.JANUARY]: data.budgets![2].id,
+            [Month.FEBRUARY]: data.budgets![2].id,
+            [Month.MARCH]: data.budgets![2].id,
+            [Month.APRIL]: data.budgets![2].id,
+            [Month.MAY]: data.budgets![2].id,
+            [Month.JUNE]: data.budgets![2].id,
+            [Month.JULY]: data.budgets![2].id,
+            [Month.AUGUST]: data.budgets![2].id,
+            [Month.SEPTEMBER]: data.budgets![2].id,
+            [Month.OCTOBER]: data.budgets![2].id,
+            [Month.NOVEMBER]: data.budgets![2].id,
+            [Month.DECEMBER]: data.budgets![2].id,
+        },
         icon: 'fa fa-bug'
     }
 ];

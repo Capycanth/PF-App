@@ -135,35 +135,23 @@ export class TestDataUtil {
                 id: this.testAccountId1,
                 user: User.JOINT,
                 year: this.todaysYear,
-                transactionsByMonth: new Map<Month, Transaction[]>([
-                    [this.todaysMonth, this.getSampleTransactions()]
-                ]),
-                budgetIdsByMonth: new Map<Month, ObjectId>([
-                    [this.todaysMonth, this.budgetId]
-                ]),
+                transactionsByMonth: { [this.todaysMonth]: this.getSampleTransactions() },
+                budgetIdsByMonth: { [this.todaysMonth]: this.budgetId },
                 icon: "fa fa-home"
             }, {
                 id: this.testAccountId2,
                 user: User.DILLON,
                 year: this.todaysYear,
-                transactionsByMonth: new Map<Month, Transaction[]>([
-                    [this.todaysMonth, this.getSampleTransactions()]
-                ]),
-                budgetIdsByMonth: new Map<Month, ObjectId>([
-                    [this.todaysMonth, this.budgetId]
-                ]),
+                transactionsByMonth: { [this.todaysMonth]: this.getSampleTransactions() },
+                budgetIdsByMonth: { [this.todaysMonth]: this.budgetId },
                 icon: "fa fa-coffee"
             },
             {
                 id: this.testAccountId3,
                 user: User.SOPHIA,
                 year: this.todaysYear,
-                transactionsByMonth: new Map<Month, Transaction[]>([
-                    [this.todaysMonth, this.getSampleTransactions()]
-                ]),
-                budgetIdsByMonth: new Map<Month, ObjectId>([
-                    [this.todaysMonth, this.budgetId]
-                ]),
+                transactionsByMonth: { [this.todaysMonth]: this.getSampleTransactions() },
+                budgetIdsByMonth: { [this.todaysMonth]: this.budgetId },
                 icon: "fa fa-bug"
             }
         ];
@@ -173,12 +161,13 @@ export class TestDataUtil {
         return {
             id: this.budgetId,
             name: "Default",
-            limitsByCategoryId: new Map<ObjectId, Map<string, number>>([
-                [this.incomeCategoryId, new Map([[this.salaryCategoryName, 5000]])],
-                [this.groceryCategoryId, new Map([[this.marketSubCategoryName, 600], [this.cafeSubCategoryName, 200]])],
-                [this.utilityCategoryId, new Map([[this.electricSubCategoryName, 200], [this.phoneSubCategoryName, 150]])],
-                [this.homeCategoryId, new Map([[this.mortgageSubCategoryName, 2200]])],
-            ])
+            limitsByCategoryId: 
+            {
+                [this.incomeCategoryId]: { [this.salaryCategoryName]: 5000 },
+                [this.groceryCategoryId]: { [this.marketSubCategoryName]: 600, [this.cafeSubCategoryName]: 200 },
+                [this.utilityCategoryId]: { [this.electricSubCategoryName]: 200, [this.phoneSubCategoryName]: 150 },
+                [this.homeCategoryId]: { [this.mortgageSubCategoryName]: 2200 },
+            }
         };
     }
 
