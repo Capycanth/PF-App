@@ -129,7 +129,7 @@ export class TransitionDialogComponent implements OnInit {
         if (date.length !== 3) return;
 
         const month: Month = getMonth(Number(date[0]));
-        const monthTransactions: Transaction[] = this.account.transactionsByMonth.get(month) ?? [];
+        const monthTransactions: Transaction[] = this.account.transactionsByMonth[month] ?? [];
 
         monthTransactions.push({
             date: formData.date,
@@ -140,7 +140,7 @@ export class TransitionDialogComponent implements OnInit {
             note: formData.note
         });
 
-        this.account.transactionsByMonth.set(month, monthTransactions);
+        this.account.transactionsByMonth[month] = monthTransactions;
 
         this.accountService.post({
             ...this.account

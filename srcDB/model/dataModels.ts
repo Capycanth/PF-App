@@ -21,6 +21,12 @@ export enum Month {
 	DECEMBER = 'Dec',
 }
 
+export function getMonth(monthNum: number): Month {
+	const monthValues = Object.values(Month);
+	// monthNum is expected 1–12, so adjust for index
+	return monthValues[monthNum - 1];
+}
+
 export interface Transaction {
 	date: string;
 	type: 'income' | 'expense';
