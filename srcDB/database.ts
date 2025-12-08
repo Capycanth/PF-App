@@ -1,46 +1,16 @@
-import Datebase from 'better-sqlite3';
+import mongoose from 'mongoose';
 
-export const db = new Datebase('srcDB/database.sqlite');
+export async function initializeDatabase(port: number) {
+    const url: string = `mongodb://127.0.0.1:${port}/pf-app`;
 
-export function initializeDatabase() {
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS category (
-            id VARCHAR(17) PRIMARY KEY,
-            name TEXT UNIQUE,
-            type TEXT,
-            subCategories TEXT
-        )
-    `).run();
+    try {
+        await mongoose.connect(url, {
+            dbName: 'pf-app'
+        });
 
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS account (
-            id VARCHAR(17) PRIMARY KEY,
-            user TEXT UNIQUE,
-            year INTEGER,
-            transactionsByMonth TEXT,
-            budgetIdsByMonth TEXT,
-            icon TEXT
-
-        )
-    `).run();
-
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS budget (
-            id VARCHAR(17) PRIMARY KEY,
-            name TEXT,
-	        limitsByCategoryId TEXT
-        )
-    `).run();
-
-    db.prepare(`
-        CREATE TABLE IF NOT EXISTS goal (
-            id VARCHAR(17) PRIMARY KEY,
-            accountId VARCHAR(17),
-            name TEXT,
-            total_cost REAL,
-            saved REAL,
-            categoryId VARCHAR(17),
-            subCategory TEXT
-        )
-    `).run();
+        console.log('Connected to MongoDB');
+    } catch (err) {
+        console.error('MongoDB connection error:', err);
+        process.exit(1);
+    }
 }

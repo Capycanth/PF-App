@@ -1,3 +1,4 @@
+import { BudgetDB } from "../../shared/model/budget.model";
 import { createBaseRouter } from "./factory.router";
 
-export default createBaseRouter('budget');
+export default createBaseRouter(BudgetDB);

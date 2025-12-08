@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { Account } from "../../../srcDB/model/dataModels";
+import { Account } from "../../../shared/model/account.model";
 import { ChangesSubscribe } from "../shared/changes-subscribe.component";
 
 @Component({
@@ -8,15 +8,18 @@ import { ChangesSubscribe } from "../shared/changes-subscribe.component";
     <div class="toolbar-wrapper">
         @for (account of accounts; track account.id) {
             @if (account.id === selectedAccount.id) {
-                <div class="account-icon selected-account" title="{{account.user}}">
+                <div class="account-icon selected-account" [title]="account.owner">
                     <button (click)="accountSelected.emit(account)"><i [class]="account.icon"></i></button>
                 </div>
             } @else {
-                <div class="account-icon" title="{{account.user}}">
+                <div class="account-icon" [title]="account.owner">
                     <button (click)="accountSelected.emit(account)"><i [class]="account.icon"></i></button>
                 </div>
             }
         }
+        <div class="account-icon" title="">
+            <button (click)="addAccount()"><i class="fa fa-plus"></i></button>
+        </div>
     </div>
     `,
     styles: `
@@ -50,5 +53,9 @@ export class ToolbarHeaderComponent extends ChangesSubscribe {
 
     protected override update(): void {
         // No-op
+    }
+
+    protected addAccount(): void {
+        return;
     }
 }

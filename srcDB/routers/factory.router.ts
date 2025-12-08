@@ -1,83 +1,83 @@
-// src/routes/baseRouter.ts
-import { RunResult } from 'better-sqlite3';
-import express, { Request, Response } from 'express';
-import { db } from '../database';
-import { generateObjectId } from '../helpers/helper';
-import { ObjectId } from '../model/dataModels';
+import express from 'express';
+import mongoose from 'mongoose';
 
-export function createBaseRouter(tableName: string): express.Router {
+export function createBaseRouter(schema: mongoose.Model<any>): express.Router {
   const router = express.Router();
 
-  // CREATE
-  router.post('/', (req: Request, res: Response) => {
-    const data = req.body;
-    const id: ObjectId = generateObjectId();
-    const keys: string[] = Object.keys(data);
-    const placeholders: string = keys.map(() => '?').join(',');
-    const values: unknown[] = Object.values(data);
-    const sql: string = `INSERT INTO ${tableName} (id, ${keys.join(',')}) VALUES (?, ${placeholders})`;
-
-    const result: RunResult = db.prepare(sql).run(id, ...values);
-    if (result.changes === 0) {
-      return res.status(500).json({ error: 'Failed to create object' });
-    } else {
-      return res.status(200).json(data);
+  // GET all
+  router.get('/', async (_req, res) => {
+    try {
+      const models = await schema.find();
+      res.json(models);
+    } catch (err) {
+      console.error('Mongo GET error:', err);
+      res.status(500).json({ error: (err as Error).message });
     }
   });
 
-  // READ ALL (and optional ?ids=)
-  router.get('/', (req: Request, res: Response) => {
-    const idsParam: string = req.query.ids as string;
-    if (idsParam) {
-      const ids: string[] = idsParam.split(',');
-      const placeholders: string = ids.map(() => '?').join(',');
-      const sql: string = `SELECT * FROM ${tableName} WHERE id IN (${placeholders})`;
+  // GET by ID
+  router.get('/:id', async (req, res) => {
+    try {
+      const id = req.params.id;
 
-      const rows: unknown[] = db.prepare(sql).all(...ids);
-      if (rows.length === 0) {
-        return res.status(404).json({ error: 'No objects found for the provided IDs' });
-      } else if (rows.length > 0 && rows.length !== ids.length) {
-        return res.status(206).json({ warning: 'Some objects were not found for the provided IDs', data: rows });
-      } else {
-        return res.status(200).json(rows);
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: 'Invalid ID format' });
       }
-    }
 
-    const rows = db.prepare(`SELECT * FROM ${tableName}`).all();
-    return res.status(200).json(rows);
+      const doc = await schema.findById(id);
+
+      if (!doc) {
+        return res.status(404).json({ error: 'Document not found' });
+      }
+
+      return res.json(doc);
+    } catch (err) {
+      console.error('Mongo GET by ID error:', err);
+      return res.status(500).json({ error: (err as Error).message });
+    }
   });
 
-  // READ ONE
-  router.get('/:id', (req: Request, res: Response) => {
-    const data: unknown = db.prepare(`SELECT * FROM ${tableName} WHERE id = ?`).get(req.params.id);
-    if (!data) {
-      return res.status(404).json({ error: 'Object not found' });
+  // POST
+  router.post('/', async (req, res) => {
+    try {
+      const created = await schema.create(req.body);
+      res.json(created);
+    } catch (err) {
+      console.error('Mongo POST error:', err);
+      res.status(400).json({ error: (err as Error).message });
     }
-    return res.status(200).json(data);
   });
 
-  // UPDATE
-  router.put('/:id', (req: Request, res: Response) => {
-    const data: any = req.body;
-    const keys: string[] = Object.keys(data);
-    const assignments: string = keys.map(k => `${k} = ?`).join(', ');
-    const values: unknown[] = Object.values(data);
-    const sql: string = `UPDATE ${tableName} SET ${assignments} WHERE id = ?`;
-
-    const result: RunResult = db.prepare(sql).run(...values, req.params.id);
-    if (result.changes === 0) {
-      return res.status(404).json({ error: 'Object not found or no changes made' });
+  // PUT
+  router.put('/:id', async (req, res) => {
+    try {
+      const updated = await schema.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true, runValidators: true }
+      );
+      if (!updated) {
+        return res.status(404).json({ error: 'Document not found' });
+      }
+      return res.json(updated);
+    } catch (err) {
+      console.error('Mongo PUT error:', err);
+      return res.status(400).json({ error: (err as Error).message });
     }
-    return res.status(200).json({ id: req.params.id, ...data });
   });
 
   // DELETE
-  router.delete('/:id', (req: Request, res: Response) => {
-    const result: RunResult = db.prepare(`DELETE FROM ${tableName} WHERE id = ?`).run(req.params.id);
-    if (result.changes === 0) {
-      return res.status(404).json({ error: 'Object not found or could not delete' });
+  router.delete('/:id', async (req, res) => {
+    try {
+      const deleted = await schema.findByIdAndDelete(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ error: 'Document not found' });
+      }
+      return res.json({ message: 'Deleted' });
+    } catch (err) {
+      console.error('Mongo DELETE error:', err);
+      return res.status(400).json({ error: (err as Error).message });
     }
-    return res.status(200).json({ id: req.params.id });
   });
 
   return router;

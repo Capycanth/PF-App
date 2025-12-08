@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Account } from '../../srcDB/model/dataModels';
+import { Account } from '../../shared/model/account.model';
 import { BaseService } from './base.service';
 
 @Injectable({ providedIn: 'any' })

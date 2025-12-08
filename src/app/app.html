@@ -10,14 +10,13 @@
       (accountSelected)="onAccountSelected($event)" />
   </div>
   <div>
-    <budget-panel [account]="selectedAccount" [month]="selectedMonth" [categoryMap]="categoryByIdMap" [test]="test" />
+    <budget-panel [account]="selectedAccount" [month]="selectedMonth" [categoryMap]="categoryByIdMap" />
   </div>
   <div>
-    <goal-panel [account]="selectedAccount" [categoryMap]="categoryByIdMap" [test]="test" />
+    <prepaid-panel [account]="selectedAccount" [categoryMap]="categoryByIdMap" />
   </div>
   <div>
-    <transaction-grid [account]="selectedAccount" [month]="selectedMonth" [categoryMap]="categoryByIdMap"
-      [test]="test" />
+    <transaction-grid [account]="selectedAccount" [month]="selectedMonth" [categoryMap]="categoryByIdMap" />
   </div>
 </div>
 }

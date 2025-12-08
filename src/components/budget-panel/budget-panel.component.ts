@@ -1,7 +1,11 @@
 import { Component, Input } from "@angular/core";
-import { Account, Budget, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
+import { Month } from "../../../shared/enumeration/month.enum";
+import { TransactionType } from "../../../shared/enumeration/transaction-type.enum";
+import { Account } from "../../../shared/model/account.model";
+import { Budget } from "../../../shared/model/budget.model";
+import { Category } from "../../../shared/model/category.model";
+import { Transaction } from "../../../shared/model/transaction.model";
 import { BudgetService } from "../../services/budget.service";
-import { TestDataUtil } from "../../test/testDataUtil";
 import { PartialRecordUtil } from "../../utils/partial-record-utils";
 import { ChangesSubscribe } from "../shared/changes-subscribe.component";
 import { InlineProgressBarComponent } from "../shared/inline-progress-bar.component";
@@ -68,7 +72,6 @@ export class BudgetPanelComponent extends ChangesSubscribe {
     @Input() account!: Account;
     @Input() month!: Month;
     @Input() categoryMap: Map<string, Category> = new Map<string, Category>();
-    @Input() test: boolean = false;
 
     protected expenseCategorySummaries: BudgetCategorySummary[] = [];
     protected incomeCategorySummaries: BudgetCategorySummary[] = [];
@@ -80,28 +83,24 @@ export class BudgetPanelComponent extends ChangesSubscribe {
         this.expenseCategorySummaries = [];
         this.incomeCategorySummaries = [];
 
-        if (this.test) {
-            this.processBudget(TestDataUtil.getBudget());
-        } else {
-            const budgetId: ObjectId | undefined = this.account.budgetIdsByMonth[this.month];
-            if (!budgetId) {
-                console.error(`No budget Id for ${this.account.user} for the month of ${this.month}`);
-                return;
-            }
-            this.budgetService.getById(budgetId).subscribe({
-                next: (budget) => {
-                    this.processBudget(budget);
-                },
-                error: () => {
-                    console.error(`Failed to retrieve budget with id ${budgetId} for ${this.account.user} for the month of ${this.month}`);
-                }
-            });
+        const budgetId: string | undefined = this.account.budgetIdsByMonth[this.month];
+        if (!budgetId) {
+            console.error(`No budget Id for ${this.account.owner} for the month of ${this.month}`);
+            return;
         }
+        this.budgetService.getById(budgetId).subscribe({
+            next: (budget) => {
+                this.processBudget(budget);
+            },
+            error: () => {
+                console.error(`Failed to retrieve budget with id ${budgetId} for ${this.account.owner} for the month of ${this.month}`);
+            }
+        });
     }
 
     private processBudget(budget: Budget): void {
         if (!budget) {
-            console.error(`No budget found for ${this.account.user} account`);
+            console.error(`No budget found for ${this.account.owner} account`);
             return;
         }
 
@@ -134,7 +133,7 @@ export class BudgetPanelComponent extends ChangesSubscribe {
                 });
             }
 
-            if (category.type === 'expense') {
+            if (category.type === TransactionType.EXPENSE) {
                 this.expenseCategorySummaries.push({
                     category: category,
                     limit: categoryLimit,
@@ -143,7 +142,7 @@ export class BudgetPanelComponent extends ChangesSubscribe {
                     percentSpent: Math.min(100, (categoryAmount / categoryLimit) * 100),
                     subCategorySummaries
                 });
-            } else if (category.type === 'income') {
+            } else if (category.type === TransactionType.INCOME) {
                 this.incomeCategorySummaries.push({
                     category: category,
                     limit: categoryLimit,
@@ -159,11 +158,11 @@ export class BudgetPanelComponent extends ChangesSubscribe {
         this.incomeCategorySummaries.sort((a, b) => b.limit - a.limit);
     }
 
-    private getRemaining(type: 'expense' | 'income', limit: number, amount: number): number {
+    private getRemaining(type: TransactionType, limit: number, amount: number): number {
         switch (type) {
-            case "expense":
+            case TransactionType.EXPENSE:
                 return limit - amount;
-            case "income":
+            case TransactionType.INCOME:
                 return amount - limit;
             default:
                 {

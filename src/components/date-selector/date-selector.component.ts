@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { Month } from "../../../srcDB/model/dataModels";
+import { Month } from "../../../shared/enumeration/month.enum";
 
 export type DateSelectEvent = {
     month: Month;

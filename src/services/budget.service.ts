@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Budget } from '../../srcDB/model/dataModels';
+import { Budget } from '../../shared/model/budget.model';
 import { BaseService } from './base.service';
 
 @Injectable({ providedIn: 'any' })

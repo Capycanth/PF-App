@@ -1,3 +1,4 @@
+import { AccountDB } from "../../shared/model/account.model";
 import { createBaseRouter } from "./factory.router";
 
-export default createBaseRouter('account');
+export default createBaseRouter(AccountDB);

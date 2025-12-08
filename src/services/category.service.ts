@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Category } from '../../srcDB/model/dataModels';
+import { Category } from '../../shared/model/category.model';
 import { BaseService } from './base.service';
 
 @Injectable({ providedIn: 'any' })

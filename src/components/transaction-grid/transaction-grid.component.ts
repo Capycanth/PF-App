@@ -1,7 +1,10 @@
 import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { MatTableModule } from "@angular/material/table";
-import { Account, Category, Month, ObjectId, Transaction } from "../../../srcDB/model/dataModels";
+import { Month } from "../../../shared/enumeration/month.enum";
+import { Account } from "../../../shared/model/account.model";
+import { Category } from "../../../shared/model/category.model";
+import { Transaction } from "../../../shared/model/transaction.model";
 import { ChangesSubscribe } from "../shared/changes-subscribe.component";
 
 type TransactionWithCategoryNames = Transaction & {
@@ -28,8 +31,7 @@ type TransactionWithCategoryNames = Transaction & {
 export class TransactionGridComponent extends ChangesSubscribe {
     @Input() account!: Account;
     @Input() month!: Month;
-    @Input() categoryMap: Map<ObjectId, Category> = new Map();
-    @Input() test: boolean = false;
+    @Input() categoryMap: Map<string, Category> = new Map();
 
     protected displayedColumns: string[] = ['Date', 'Type', 'Category', 'Sub-Category', 'Amount', 'Note'];
 
